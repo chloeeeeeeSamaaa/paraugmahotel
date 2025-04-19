@@ -17,8 +17,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;import com.toedter.calendar.JDateChooser;
 import hotelfinalhaha.admindashboard;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Window;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 
 /**
  *
@@ -39,6 +48,7 @@ public class ReserveDialog extends javax.swing.JDialog {
         initComponents();
         con = connector.Connect();
         loadRoomTypes();
+        styleComboBox(roomTypeComboBox);
         jDateChooserCheckIn = new com.toedter.calendar.JDateChooser();
 jDateChooserCheckOut = new com.toedter.calendar.JDateChooser();
 
@@ -85,9 +95,31 @@ public void setDetails(String reserveID, String in, String out, String status, S
         e.printStackTrace();
     }
 
-    jTextFieldStatus.setText(status);
-    jTextFieldAmount.setText(amount);
+    jLabel8.setText(status);
+    jLabel7.setText(amount);
 }
+ private void styleComboBox(JComboBox comboBox) {
+    // Set background color to match your dashboard (white)
+    comboBox.setBackground(Color.WHITE);
+    comboBox.setForeground(new Color(0, 0, 0)); // Black text for clarity
+    comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Clean, modern font
+    comboBox.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200))); // Light gray border
+
+    comboBox.setUI(new BasicComboBoxUI() {
+        @Override
+        protected JButton createArrowButton() {
+            JButton arrowButton = super.createArrowButton();
+            arrowButton.setBackground(Color.WHITE); // White background to match combo box
+            arrowButton.setBorder(BorderFactory.createEmptyBorder()); // Remove border around the arrow
+            arrowButton.setIcon(UIManager.getIcon("ComboBox.buttonDownIcon")); // Default combo box arrow icon
+            return arrowButton;
+        }
+    });
+
+    comboBox.setFocusable(false); // Optional: removes blue focus ring when clicked
+}
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -100,8 +132,6 @@ public void setDetails(String reserveID, String in, String out, String status, S
         jPanel1 = new javax.swing.JPanel();
         jTextFieldCheckIn = new com.toedter.calendar.JDateChooser();
         jTextFieldCheckOut = new com.toedter.calendar.JDateChooser();
-        jTextFieldStatus = new javax.swing.JTextField();
-        jTextFieldAmount = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -109,30 +139,26 @@ public void setDetails(String reserveID, String in, String out, String status, S
         jLabel4 = new javax.swing.JLabel();
         kButton1 = new com.k33ptoo.components.KButton();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTextFieldStatus.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
-        jTextFieldStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldStatusActionPerformed(evt);
-            }
-        });
-
-        jTextFieldAmount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldAmountActionPerformed(evt);
-            }
-        });
-
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         jLabel1.setText("CheckIn");
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         jLabel2.setText("CheckOut");
 
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         jLabel3.setText("Status");
 
+        roomTypeComboBox.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         jLabel4.setText("Amount");
 
         kButton1.setText("UPDATE");
@@ -142,59 +168,71 @@ public void setDetails(String reserveID, String in, String out, String status, S
             }
         });
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel5.setText("jLabel5");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        jLabel6.setText("ReserveID");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel7.setText("jLabel7");
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel8.setText("jLabel8");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(116, 116, 116)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(97, 97, 97)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel1)
-                                .addComponent(jTextFieldCheckIn, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
-                                .addComponent(jTextFieldCheckOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextFieldStatus)
-                                .addComponent(jLabel3)
-                                .addComponent(jTextFieldAmount)
-                                .addComponent(roomTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel5)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addComponent(kButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(140, Short.MAX_VALUE))
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel4)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel1)
+                        .addComponent(jTextFieldCheckIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextFieldCheckOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addComponent(roomTypeComboBox, 0, 213, Short.MAX_VALUE))
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel8))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(134, Short.MAX_VALUE)
+                .addComponent(kButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(131, 131, 131))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel5)
+                .addGap(17, 17, 17)
+                .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldCheckIn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextFieldCheckOut, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addComponent(jLabel8)
+                .addGap(12, 12, 12)
                 .addComponent(roomTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel7)
+                .addGap(28, 28, 28)
                 .addComponent(kButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -211,17 +249,9 @@ public void setDetails(String reserveID, String in, String out, String status, S
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldStatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldStatusActionPerformed
-
-    private void jTextFieldAmountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldAmountActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldAmountActionPerformed
-
     private void kButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kButton1ActionPerformed
         // TODO add your handling code here:
-       String selectedRoomTypeID = (String) roomTypeComboBox.getSelectedItem();
+     String selectedRoomTypeID = (String) roomTypeComboBox.getSelectedItem();
 
     if ("Select Room Type".equals(selectedRoomTypeID)) {
         JOptionPane.showMessageDialog(this, "Please select a valid room type.");
@@ -234,6 +264,21 @@ public void setDetails(String reserveID, String in, String out, String status, S
 
     if (checkInDate == null || checkOutDate == null) {
         JOptionPane.showMessageDialog(this, "Please select valid check-in and check-out dates.");
+        return;
+    }
+
+    // 🛑 Check-in date must be today or later
+    LocalDate today = LocalDate.now();
+    LocalDate checkInLocal = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    LocalDate checkOutLocal = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+    if (checkInLocal.isBefore(today)) {
+        JOptionPane.showMessageDialog(this, "Check-in date cannot be before today.");
+        return;
+    }
+
+    if (!checkOutLocal.isAfter(checkInLocal)) {
+        JOptionPane.showMessageDialog(this, "Check-out must be after check-in.");
         return;
     }
 
@@ -369,11 +414,12 @@ public void setDetails(String reserveID, String in, String out, String status, S
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextFieldAmount;
     private com.toedter.calendar.JDateChooser jTextFieldCheckIn;
     private com.toedter.calendar.JDateChooser jTextFieldCheckOut;
-    private javax.swing.JTextField jTextFieldStatus;
     private com.k33ptoo.components.KButton kButton1;
     private javax.swing.JComboBox<String> roomTypeComboBox;
     // End of variables declaration//GEN-END:variables

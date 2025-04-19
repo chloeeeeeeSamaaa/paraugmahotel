@@ -25,9 +25,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 /**
  *
  * @author Admin
@@ -40,34 +42,57 @@ Connection con;
      * Creates new form admindashboard
      */
     public admindashboard() {
-        initComponents();
-        con = connector.Connect();
-        Load_room();
-        displayLatestRoom();
-        styleTableHeader(); // already styles both jTable1 and jTable2 headers and centers data
-        jTable2.setRowHeight(25);
-        jTable2.getTableHeader().setPreferredSize(new Dimension(0, 25));
-        jTable2.setDefaultEditor(Object.class, null);
-        jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        jTable2.setFocusable(false);
-        jTable2.setRowSelectionAllowed(true);
-        jTable2.setColumnSelectionAllowed(false);
-        styleComboBox(jComboBox1);
-        styleComboBox(jComboBox2);
-        Load_reservation();
-        jTable1.setRowHeight(25);
-        jTable1.getTableHeader().setPreferredSize(new Dimension(0, 25));
-        jTable1.setDefaultEditor(Object.class, null);
-        jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        jTable1.setFocusable(false);
-        jTable1.setRowSelectionAllowed(true);
-        jTable1.setColumnSelectionAllowed(false);
+      initComponents();
+    con = connector.Connect();
+
+    Load_client();
+    Load_room();
+    displayLatestRoom();
+    Load_reservation();
     loadDashboardStats();
+
+    // Style tables
+    styleTableHeader(); // Applies to jTable1, jTable2, jTable3
+
+    // jTable1 settings
+    jTable1.setRowHeight(25);
+    jTable1.getTableHeader().setPreferredSize(new Dimension(0, 25));
+    jTable1.setDefaultEditor(Object.class, null);
+    jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    jTable1.setFocusable(false);
+    jTable1.setRowSelectionAllowed(true);
+    jTable1.setColumnSelectionAllowed(false);
+
+    // jTable2 settings
+    jTable2.setRowHeight(25);
+    jTable2.getTableHeader().setPreferredSize(new Dimension(0, 25));
+    jTable2.setDefaultEditor(Object.class, null);
+    jTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    jTable2.setFocusable(false);
+    jTable2.setRowSelectionAllowed(true);
+    jTable2.setColumnSelectionAllowed(false);
+
+    // ✅ jTable3 settings
+    jTable3.setRowHeight(25);
+    jTable3.getTableHeader().setPreferredSize(new Dimension(0, 25));
+    jTable3.setDefaultEditor(Object.class, null);
+    jTable3.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    jTable3.setFocusable(false);
+    jTable3.setRowSelectionAllowed(true);
+    jTable3.setColumnSelectionAllowed(false);
+
+    // Style comboboxes
+    styleComboBox(jComboBox1);
+    styleComboBox(jComboBox2);
+    // Border style
+    applyTableBorder(jTable1);
+    applyTableBorder(jTable2);
+    applyTableBorder(jTable3);
+
     }
   private void styleTableHeader() {
-    // Style the header for jTable2
-    JTableHeader header2 = jTable2.getTableHeader();
-    header2.setDefaultRenderer(new DefaultTableCellRenderer() {
+    // Header styling function (shared logic)
+    TableCellRenderer headerRenderer = new DefaultTableCellRenderer() {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
@@ -80,38 +105,45 @@ Connection con;
             lbl.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
             return lbl;
         }
-    });
+    };
 
-    // Center the data inside the cells for jTable2
-    DefaultTableCellRenderer centerRenderer2 = new DefaultTableCellRenderer();
-    centerRenderer2.setHorizontalAlignment(SwingConstants.CENTER);
-    for (int i = 0; i < jTable2.getColumnCount(); i++) {
-        jTable2.getColumnModel().getColumn(i).setCellRenderer(centerRenderer2);
-    }
+    // Data cell center renderer
+    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+    centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-    // Style the header for jTable1
+    // Apply to jTable1
     JTableHeader header1 = jTable1.getTableHeader();
-    header1.setDefaultRenderer(new DefaultTableCellRenderer() {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            JLabel lbl = new JLabel(value.toString());
-            lbl.setOpaque(true);
-            lbl.setBackground(new Color(32, 136, 203));
-            lbl.setForeground(Color.WHITE);
-            lbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
-            lbl.setHorizontalAlignment(SwingConstants.CENTER);
-            lbl.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-            return lbl;
-        }
-    });
-
-    // Center the data inside the cells for jTable1
-    DefaultTableCellRenderer centerRenderer1 = new DefaultTableCellRenderer();
-    centerRenderer1.setHorizontalAlignment(SwingConstants.CENTER);
+    header1.setDefaultRenderer(headerRenderer);
     for (int i = 0; i < jTable1.getColumnCount(); i++) {
-        jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer1);
+        jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
     }
+
+    // Apply to jTable2
+    JTableHeader header2 = jTable2.getTableHeader();
+    header2.setDefaultRenderer(headerRenderer);
+    for (int i = 0; i < jTable2.getColumnCount(); i++) {
+        jTable2.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+
+    // ✅ Now also apply to jTable3
+    JTableHeader header3 = jTable3.getTableHeader();
+    header3.setDefaultRenderer(headerRenderer);
+    for (int i = 0; i < jTable3.getColumnCount(); i++) {
+        jTable3.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+}
+
+  private void applyTableBorder(JTable table) {
+    // Create a border with thickness and color
+    Border outerBorder = BorderFactory.createLineBorder(new Color(32, 136, 203), 3); // Blue border with thickness 3
+    table.setBorder(outerBorder); // Apply the border to the table
+    
+    // If you want to apply rounded corners (optional)
+    Border roundedBorder = BorderFactory.createCompoundBorder(
+            outerBorder,
+            BorderFactory.createEmptyBorder(5, 5, 5, 5) // Adds padding inside the table border
+    );
+    table.setBorder(roundedBorder); // Apply the compound border with padding
 }
   private void styleComboBox(JComboBox comboBox) {
     // Set background color to match your table header
@@ -164,7 +196,35 @@ Connection con;
     }
 }
 
+public void Load_client() {
+    try {
+        // Use a parameterized query to prevent SQL injection
+        pat = con.prepareStatement("SELECT * FROM users");
+      
+        ResultSet rs = pat.executeQuery();
 
+        // Get table model and clear existing rows
+        d = (DefaultTableModel) jTable3.getModel();
+        d.setRowCount(0);
+
+        while (rs.next()) {
+            // Create a new row with values for the current reservation
+            Vector<String> v2 = new Vector<>();
+            v2.add(rs.getString("userID"));
+            v2.add(rs.getString("username"));
+            v2.add(rs.getString("firstName"));
+            v2.add(rs.getString("lastName"));
+            v2.add(rs.getString("gender"));
+             v2.add(rs.getString("password"));
+
+            // Add the row to the table model
+            d.addRow(v2);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(admindashboard.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(null, "Error loading reservations: " + ex.getMessage());
+    }
+}
 
 public void Load_room() {
     try {
@@ -314,6 +374,8 @@ public void Load_reservation() {
         k4 = new com.k33ptoo.components.KGradientPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         kGradientPanel5 = new com.k33ptoo.components.KGradientPanel();
@@ -349,6 +411,7 @@ public void Load_reservation() {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
+        jTextField3 = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable4 = new javax.swing.JTable();
@@ -357,7 +420,7 @@ public void Load_reservation() {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, new java.awt.Color(153, 153, 153)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, new java.awt.Color(0, 0, 0)));
         jPanel2.setPreferredSize(new java.awt.Dimension(300, 600));
 
         k2.setBackground(new java.awt.Color(255, 255, 255));
@@ -505,23 +568,45 @@ public void Load_reservation() {
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ICONS/sr2f38b6b22b6aws3-ezgif.com-resize (1).gif"))); // NOI18N
+
+        jLabel7.setText("LOGOUT");
+        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel7MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(k2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(k4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(k1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(k3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(k2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(k4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(k1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(k3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(76, 76, 76)
+                                .addComponent(jLabel8))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(89, 89, 89)
+                                .addComponent(jLabel7)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(107, 107, 107)
+                .addGap(15, 15, 15)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(k1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
                 .addComponent(k2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -529,7 +614,9 @@ public void Load_reservation() {
                 .addComponent(k3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addComponent(k4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel7)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 260, 600));
@@ -949,40 +1036,63 @@ public void Load_reservation() {
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "UserID", "Username", "Firstname", "Lastname", "Email", "Gender", "Password"
+                "UserID", "Username", "Firstname", "Lastname", "Gender", "Password"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
+        jTable3.setGridColor(new java.awt.Color(0, 0, 0));
+        jTable3.setRowHeight(25);
+        jTable3.setSelectionBackground(new java.awt.Color(232, 57, 95));
+        jTable3.setShowHorizontalLines(true);
+        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable3MouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jTable3);
+
+        jTextField3.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        jTextField3.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField3FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField3FocusLost(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 922, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 915, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(142, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(78, 78, 78))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(58, 58, 58)
+                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         jPanel1.add(jPanel4, "card3");
@@ -1380,6 +1490,53 @@ private int lastSelectedRow = -1;
     }
     }//GEN-LAST:event_jTable1MouseClicked
 
+    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
+        // TODO add your handling code here:
+        Login ad = new Login();
+        ad.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jLabel7MouseClicked
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        // TODO add your handling code here:
+         int row = jTable3.rowAtPoint(evt.getPoint());
+
+    // Double-click to open dialog
+    if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
+        if (row >= 0) {
+            String userID =jTable3.getValueAt(row, 0).toString();
+            String username = jTable3.getValueAt(row, 1).toString();
+            String firstname = jTable3.getValueAt(row, 2).toString();
+            String lastname = jTable3.getValueAt(row, 3).toString();
+            String gender = jTable3.getValueAt(row, 4).toString();
+            String password = jTable3.getValueAt(row, 5).toString();
+            
+        }
+    }
+
+    // Right-click to deselect the row (unclick)
+    if (evt.getButton() == MouseEvent.BUTTON3) { // Right-click
+        jTable3.clearSelection();
+    }
+    }//GEN-LAST:event_jTable3MouseClicked
+
+    private void jTextField3FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField3FocusGained
+        // TODO add your handling code here:
+         if(jTextField3.getText().equals("Search")){
+            jTextField3.setText("");
+            jTextField3.setForeground(new Color(0,0,0));
+        }
+        
+    }//GEN-LAST:event_jTextField3FocusGained
+
+    private void jTextField3FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField3FocusLost
+        // TODO add your handling code here:
+        if(jTextField3.getText().equals("")){
+            jTextField3.setText("Search");
+            jTextField3.setForeground(new Color(153,153,153));
+        }
+    }//GEN-LAST:event_jTextField3FocusLost
+
 
     /**a
      * @param args the command line arguments
@@ -1436,6 +1593,8 @@ private int lastSelectedRow = -1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1452,6 +1611,7 @@ private int lastSelectedRow = -1;
     private javax.swing.JTable jTable4;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     private com.k33ptoo.components.KGradientPanel k1;
     private com.k33ptoo.components.KGradientPanel k2;
     private com.k33ptoo.components.KGradientPanel k3;
